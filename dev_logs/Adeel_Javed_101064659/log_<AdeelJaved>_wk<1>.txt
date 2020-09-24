@@ -1,0 +1,1 @@
+Week1(Week of Sep 21): Set up enviornment in Android Studio for us to code using our github branches.
