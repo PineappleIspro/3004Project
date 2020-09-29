@@ -1,2 +1,2 @@
 Week1(Week of Sep 21): Set up github branches. Learn version control.
-
+Week2(Week of Sep 28): I am making change for this week using git!
