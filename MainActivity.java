@@ -184,13 +184,13 @@ String apiKey = "d347328678a5eb693250b4aa687d02a8";
                 .addConverterFactory(GsonConverterFactory.create()).build();
 
         API api = retrofit.create(API.class);
-        Call<MainClass> API = api.getWeather(tvcity.getText().toString(),apiKey);
-        API.enqueue(new Callback<MainClass>() {
+        Call<connectAPI> API = api.getWeather(tvcity.getText().toString(),apiKey);
+        API.enqueue(new Callback<connectAPI>() {
             @Override
-            public void onResponse(Call<MainClass> call, Response<MainClass> response) {
+            public void onResponse(Call<connectAPI> call, Response<connectAPI> response) {
 
-                MainClass data = response.body();
-                Main main = data.getMain();
+                connectAPI data = response.body();
+                infoAPI main = data.getMain();
                 Double Kalv_Temp = main.getTemp();
                 Integer Celc_Temp = (int) (Kalv_Temp - 273.15); //calv to celc
                 String weatherString = String.valueOf(Celc_Temp) + " ℃ in " + tvcity.getText().toString() ;
@@ -199,7 +199,7 @@ String apiKey = "d347328678a5eb693250b4aa687d02a8";
 
 
             @Override
-            public void onFailure(Call<MainClass> call, Throwable t) {
+            public void onFailure(Call<connectAPI> call, Throwable t) {
 
             }
         });
