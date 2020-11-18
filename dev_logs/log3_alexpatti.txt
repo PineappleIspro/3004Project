@@ -1,0 +1,5 @@
+Planner now has persistent storage.
+Press the 'Save' Button to store the current Text in the textbox for the currently selected date
+Access the stored data with the public method 'getPlannerData(date)'
+where 'date' is a String of the form "DD-MM-YYYY"
+Currently overhauling the ui because it is pretty bad atm.

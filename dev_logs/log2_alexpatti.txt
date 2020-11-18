@@ -1,0 +1,2 @@
+Added basic planner functionality
+Currently has no persistent storage
