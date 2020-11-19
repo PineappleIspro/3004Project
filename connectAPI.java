@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class connectAPI {
     @SerializedName("main")
+
     infoAPI main;
 
     public infoAPI getMain() {

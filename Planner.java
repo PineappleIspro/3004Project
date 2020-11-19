@@ -1,28 +1,45 @@
 package com.example.wiffle_adeel;
 
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.Map;
-
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class Planner extends AppCompatActivity {
 
+    // private LocalDate currentDate = LocalDate.now();
+    private String Date;
+
+    //Setting up the persistent SharedPreferences objects to store planner data
+    private SharedPreferences sharedPref;
+    private SharedPreferences.Editor editor;
+
+    //Requests the Planner Data matching the String date, returns an empty string "" if no data
+    //Use this format for the date string: "DD-MM-YYYY"
+    public String getPlannerData(String date) {
+        return sharedPref.getString(Date, "");
+    }
+
     // Calendar object
-    CalendarView calender;
+    private CalendarView calender;
     // Text object for displaying date
-    TextView date_view;
-    // List object to store data for specified dates
-    Map calendar_data;
-    // EditText object to allow input for the above List
-    EditText textbx;
-    String Date = "0";
+    private TextView date_view;
+    // Button for inputting schedule data
+    private Button calendar_button;
+    // Textbox for modifying planner data, possibly temporary until better implementation
+    private EditText textbx;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -30,11 +47,17 @@ public class Planner extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_planner);
 
+        //Initializes sharedPreferences
+        sharedPref = getSharedPreferences("com.wiffleweather.android.sharedpref", MODE_PRIVATE);
+        editor = sharedPref.edit();
+
         // ID references the id's defined in activity_main.xml
         calender = (CalendarView)
                 findViewById(R.id.calender);
         date_view = (TextView)
                 findViewById(R.id.date_view);
+        calendar_button = (Button)
+                findViewById(R.id.calender_button);
         textbx = (EditText)
                 findViewById(R.id.calender_data);
 
@@ -59,12 +82,21 @@ public class Planner extends AppCompatActivity {
                                         + (month + 1) + "-" + year;
                                 // set this date in TextView for Display
                                 date_view.setText(Date);
-                                // read the text associated with this date in the Map
-                                //TODO
-                                //textbx.setText((String) calendar_data.get(Date));
-                                textbx.setText(Date); //placeholder to test assignment
+                                // get planner data for Date and display it in EditText
+                                textbx.setText(getPlannerData(Date));
                             }
                         });
+
+        // Set Up Calendar_Button listener
+        calendar_button
+                .setOnClickListener(new View.OnClickListener(){
+                    public void onClick(View v){
+                        //TODO
+                        //Currently Saves the data in textbx
+                        editor.putString(Date, textbx.getText().toString());
+                        editor.apply();
+                    }
+                });
 
         // Set up EditText listener
         //TODO
@@ -77,12 +109,14 @@ public class Planner extends AppCompatActivity {
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
-                        //calendar_data.put(Date, s.toString());
+
                     }
 
                     @Override
                     public void afterTextChanged(Editable s) {
                     }
                 });
+
+
     }
 }

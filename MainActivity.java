@@ -47,23 +47,28 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
-EditText place;
-TextView weatherMain;
-private Button plannerButton;
+    EditText place;
+    TextView weatherMain;
+    private Button plannerButton;
+    TextView weatherDescription;
 
-String apiKey = "d347328678a5eb693250b4aa687d02a8";
+
+    String apiKey = "d347328678a5eb693250b4aa687d02a8";
     private final String CHANNEL_ID = "personal_notifications";
     private final int Notification_ID = 001;
     Button btlocation;
     TextView tvlatitude,tvlongitude, tvcity;
+
     FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SimpleDateFormat formatter= new SimpleDateFormat("MMMM-dd-yyyy 'at' HH:mm z");
+        SimpleDateFormat plannerFormatter= new SimpleDateFormat("dd-MM-yyyy");
         Date date = new Date(System.currentTimeMillis());
         String dateString = formatter.format(date);
+        String plannerDate = plannerFormatter.format(date);
         setContentView(R.layout.activity_main);
 
         //assign variable
@@ -77,10 +82,17 @@ String apiKey = "d347328678a5eb693250b4aa687d02a8";
 
         TextView dateTime = (TextView) findViewById(R.id.dateTime);
         dateTime.setText(dateString);
-        dateTime.setTextSize(20);
+        dateTime.setTextSize(15);
 
         weatherMain = findViewById(R.id.weatherMain);
-        weatherMain.setTextSize(20);
+        weatherMain.setTextSize(15);
+
+
+
+        weatherDescription = findViewById(R.id.Description);
+        weatherDescription.setTextSize(15);
+
+
         getWeather();
 
         final TextView tripTitle = (TextView) findViewById(R.id.trips_title);
@@ -205,6 +217,8 @@ String apiKey = "d347328678a5eb693250b4aa687d02a8";
         });
 
     }
+
+
 
     public String getCityName(double lat, double lon){
         String curCity= "";
