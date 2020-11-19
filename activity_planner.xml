@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Planner">
+    tools:context=".MainActivity">
 
     <!-- Displays the Date -->
     <TextView
@@ -25,6 +25,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     </CalendarView>
+
+    <Button
+        android:id="@+id/calender_button"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Save Data" />
 
     <!-- Box for editing/viewing the Calendar Data -->
     <!-- android:layout_alignBottom="@id/calender" -->
