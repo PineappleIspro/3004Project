@@ -1,0 +1,1 @@
+Finished getting location and started on popup
