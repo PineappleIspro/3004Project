@@ -1,0 +1,1 @@
+Connect Api to the Gui. Showing current day temperature for a set location. 
