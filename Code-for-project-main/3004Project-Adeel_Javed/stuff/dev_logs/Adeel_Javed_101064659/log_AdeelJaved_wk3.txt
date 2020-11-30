@@ -1,0 +1,1 @@
+got a working API to get basic data and some very basic design completed (button, type and display weather)
