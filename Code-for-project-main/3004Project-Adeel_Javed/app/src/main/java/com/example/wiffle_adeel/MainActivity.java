@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,7 +72,9 @@ public class MainActivity extends AppCompatActivity {
         SimpleDateFormat formatter= new SimpleDateFormat("MMMM-dd-yyyy 'at' HH:mm z");
         SimpleDateFormat plannerFormatter= new SimpleDateFormat("dd-MM-yyyy");
         SimpleDateFormat timeFormatter= new SimpleDateFormat("HH:mm");
+
         Date date = new Date(System.currentTimeMillis());
+
         String dateString = formatter.format(date);
         String timeString = timeFormatter.format(date);
         final String plannerDate = plannerFormatter.format(date);
@@ -94,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         weatherMain = findViewById(R.id.weatherMain);
-        weatherMain.setTextSize(15);
+        weatherMain.setTextSize(20);
         weatherDescription = findViewById(R.id.Description);
         weatherDescription.setTextSize(15);
         if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         getWeather();
+        FiveDayForecast();
 
         final TextView tripTitle = (TextView) findViewById(R.id.trips_title);
         final String tripsWord = " Your Trips";
@@ -163,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
                 City=(tv_updatedCity.getText().toString());
                 tvcity.setText(City);
                 getWeather();
+                FiveDayForecast();
                 //System.out.println(City);
                 alertDialog.dismiss();
             }
@@ -223,6 +228,7 @@ public class MainActivity extends AppCompatActivity {
                         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
                     }
                     getWeather();
+                    FiveDayForecast();
                 }
             });
 
@@ -250,17 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
                     String w = response.body().getWeather().get(0).getMain();
                     weatherDescription.setText(w);
-                    switch (w) {
-                        case "Clouds":
-                            setBackgroundColour(16777215);
-                            break;
-                        case "Sunny":
-                            setBackgroundColour(16768776);
-                            break;
-                        case "Rain":
-                            setBackgroundColour(22783);
-                            break;
-                    }
+
                 }
 
             }
@@ -273,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     public void FiveDayForecast(){
@@ -281,15 +276,23 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create()).build();
 
         API api = retrofit1.create(API.class);
-        Call<ListClass> API = api.FiveDayForecast(place.getText().toString().trim(),apiKey);
+        Call<ListClass> API = api.FiveDayForecast(tvcity.getText().toString().trim(),apiKey);
         API.enqueue(new Callback<ListClass>() {
             @Override
             public void onResponse(Call<ListClass> call, Response<ListClass> response) {
+                ScrollView weatherLayout = (ScrollView) findViewById(R.id.weekly_scroll);
+                String fiveDayString = "  ";
+                for (int i = 0; i < 5; i++){
+                    Double w = response.body().getForecast().get(i*8).getMain().getTemp();
+                    int celc = (int) (w - 273.15);
+                    Date newDate = new Date(System.currentTimeMillis() + 86400000*i);
+                    SimpleDateFormat dateFormatter= new SimpleDateFormat("MMMM-dd");
+                    fiveDayString = fiveDayString + Integer.toString(celc) + " ℃ on " + dateFormatter.format(newDate) + "\n" + "  ";
+                }
+                TextView fiveDayText = (TextView) findViewById(R.id.week);
+                fiveDayText.setTextSize(18);
+                fiveDayText.setText(fiveDayString);
 
-                Double w = response.body().getForecast().get(8).getMain().getTemp();
-                int celc = (int) (w - 273.15);
-
-                //View action here
             }
             @Override
             public void onFailure(Call<ListClass> call, Throwable t) {
