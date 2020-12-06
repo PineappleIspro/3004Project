@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,16 +20,19 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
    // private LocalDate currentDate = LocalDate.now();
-    private String Date;
+    private String date;
 
     //Setting up the persistent SharedPreferences objects to store planner data
     private SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
 
     //Requests the Planner Data matching the String date, returns an empty string "" if no data
-    //Use this format for the date string: "DD-MM-YYYY"
+    //Use this format for the date string key: "DD-MM-YYYY"
+    //The format of the value is "H:M_string"
+    //Where H is the hour and M is the minute
+    //Only supports one time per date at the moment
     public String getPlannerData(String date) {
-        return sharedPref.getString(Date, "");
+        return sharedPref.getString(date, "");
     }
 
     // Calendar object
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView date_view;
     // Button for inputting schedule data
     private Button calendar_button;
+    // Clock for selecting the time for the planner event
+    private TimePicker clock;
     // Textbox for modifying planner data, possibly temporary until better implementation
     private EditText textbx;
 
@@ -58,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 findViewById(R.id.date_view);
         calendar_button = (Button)
                 findViewById(R.id.calender_button);
+        clock = (TimePicker)
+                findViewById(R.id.timeSelector);
+        clock.setIs24HourView(true);
         textbx = (EditText)
                 findViewById(R.id.calender_data);
 
@@ -73,17 +82,28 @@ public class MainActivity extends AppCompatActivity {
                                     @NonNull CalendarView view,
                                     int year,
                                     int month,
-                                    int dayOfMonth)
-                            {
+                                    int dayOfMonth) {
                                 // Assigns the selected date to the Date string
                                 // month index starts at 0 hence the + 1
-                                Date
+                                date
                                         = dayOfMonth + "-"
                                         + (month + 1) + "-" + year;
                                 // set this date in TextView for Display
-                                date_view.setText(Date);
-                                // get planner data for Date and display it in EditText
-                                textbx.setText(getPlannerData(Date));
+                                date_view.setText(date);
+
+                                String date_data = getPlannerData(date);
+                                if (date_data != "") {
+                                    // get planner data for Date and display it in EditText
+                                    //textbx.setText(date_data);
+                                    textbx.setText(date_data.substring(date_data.indexOf("_") + 1));
+                                    // also set the clock to the time the data specifies
+                                    clock.setHour(Integer.parseInt(
+                                            date_data.substring(0, date_data.indexOf(":"))));
+                                    clock.setMinute(Integer.parseInt(
+                                            date_data.substring(date_data.indexOf(":") + 1, date_data.indexOf("_"))));
+                                } else {
+                                    textbx.setText("");
+                                }
                             }
                         });
 
@@ -91,9 +111,12 @@ public class MainActivity extends AppCompatActivity {
         calendar_button
                 .setOnClickListener(new View.OnClickListener(){
                     public void onClick(View v){
-                        //TODO
-                        //Currently Saves the data in textbx
-                        editor.putString(Date, textbx.getText().toString());
+                        //Saves the set time and string in the database
+                        editor.putString(date, clock.getHour()
+                                                + ":"
+                                                + clock.getMinute()
+                                                + "_"
+                                                + textbx.getText().toString());
                         editor.apply();
                     }
                 });

@@ -20,7 +20,7 @@
     <!-- Displays the Calendar -->
     <CalendarView
         android:id="@+id/calender"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -32,10 +32,19 @@
         android:layout_width="wrap_content"
         android:text="Save Data" />
 
+    <!-- Clock for selecting the time to input data -->
+    <TimePicker
+        android:id="@+id/timeSelector"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:timePickerMode="spinner"/>
+
     <!-- Box for editing/viewing the Calendar Data -->
-    <!-- android:layout_alignBottom="@id/calender" -->
     <EditText
         android:id="@+id/calender_data"
+        android:layout_alignParentBottom="true"
         android:inputType="text"
         android:selectAllOnFocus="true"
         android:scrollHorizontally="false"
