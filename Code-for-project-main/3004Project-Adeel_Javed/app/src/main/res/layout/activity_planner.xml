@@ -17,6 +17,12 @@
         android:textColor="@android:color/background_dark"
         android:textStyle="bold" />
 
+    <Button
+        android:id="@+id/back_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back" />
+
     <!-- Displays the Calendar -->
     <CalendarView
         android:id="@+id/calender"
@@ -28,9 +34,21 @@
 
     <Button
         android:id="@+id/calender_button"
-        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="300dp"
         android:text="Save Data" />
+    <!-- Clock for selecting the time to input data -->
+    <TimePicker
+        android:id="@+id/timeSelector"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:timePickerMode="spinner"/>
+
 
     <!-- Box for editing/viewing the Calendar Data -->
     <!-- android:layout_alignBottom="@id/calender" -->
