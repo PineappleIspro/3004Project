@@ -22,17 +22,20 @@
             android:id="@+id/weatherMain"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="8sp" />
+            android:lineSpacingExtra="8sp"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/Description"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textStyle="bold"/>
 
         <TextView
             android:id="@+id/dateTime"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textStyle="bold"/>
 
 
         <TextView
@@ -59,6 +62,12 @@
             android:layout_marginTop="50dp"
             android:text="City"
             android:visibility="invisible" />
+        <TextView
+            android:id="@+id/tv_updatedCity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:visibility="invisible" />
     </LinearLayout>
 
     <ScrollView
@@ -73,11 +82,11 @@
         android:background="@drawable/border"
         android:layout_marginStart="2dp">
 
-        <LinearLayout
+        <TextView
             android:id="@+id/week"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
+            android:layout_height="wrap_content" />
+
     </ScrollView>
 
     <LinearLayout
@@ -138,6 +147,7 @@
         android:layout_marginBottom="0dp"
         android:layout_toEndOf="@id/topLayout"
         android:layout_toRightOf="@id/topLayout"
+        android:onClick="btn_showDialog"
         android:background="@drawable/locationsymbol" />
 
 
