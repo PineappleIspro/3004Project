@@ -28,8 +28,11 @@
 
     <Button
         android:id="@+id/calender_button"
-        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="60dp"
+        android:layout_marginLeft="300dp"
         android:text="Save Data" />
 
     <!-- Clock for selecting the time to input data -->
