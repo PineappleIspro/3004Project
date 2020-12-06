@@ -1,0 +1,1 @@
+Finished with getting current weather data. working on getting 5 day forecast
