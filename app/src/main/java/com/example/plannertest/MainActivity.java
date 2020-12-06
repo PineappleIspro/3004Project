@@ -85,9 +85,24 @@ public class MainActivity extends AppCompatActivity {
                                     int dayOfMonth) {
                                 // Assigns the selected date to the Date string
                                 // month index starts at 0 hence the + 1
+                                // Adds preceding 0 if applicable
+                                String s_month;
+                                if (month < 10){
+                                    s_month = ("0" + String.valueOf((month+1)));
+                                } else {
+                                    s_month = (String.valueOf((month+1)));
+                                }
+
+                                String s_dayOfMonth;
+                                if (dayOfMonth < 10){
+                                    s_dayOfMonth = ("0" + String.valueOf((dayOfMonth)));
+                                } else {
+                                    s_dayOfMonth = String.valueOf((dayOfMonth));
+                                }
+
                                 date
-                                        = dayOfMonth + "-"
-                                        + (month + 1) + "-" + year;
+                                        = s_dayOfMonth + "-"
+                                        + s_month + "-" + year;
                                 // set this date in TextView for Display
                                 date_view.setText(date);
 
@@ -122,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         // Set up EditText listener
-        //TODO
         textbx
                 .addTextChangedListener(new TextWatcher() {
                     @Override
