@@ -1,0 +1,2 @@
+Integrate Alex's planner code into the gui and have a button on the main page to navigate to it.
+Update descriptions of temperature to be more visually appealing.

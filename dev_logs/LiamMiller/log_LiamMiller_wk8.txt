@@ -1,0 +1,3 @@
+Fixed trip display bug so that trips now display on the date that they are occuring. 
+Bolded title text to make more clear. Attempted to change coulour of gui based on current weather 
+

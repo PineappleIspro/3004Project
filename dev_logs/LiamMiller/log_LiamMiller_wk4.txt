@@ -1,0 +1,2 @@
+Integrate Jeff's geolocation code in so that it finds the daily temperature and displays it for the location.
+Connect the app to the play store. 

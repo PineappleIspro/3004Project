@@ -1,0 +1,3 @@
+Change the button to be more visually appealling with the icon. Attempting to integrate new info from api 
+but running into crashing issues. 
+

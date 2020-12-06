@@ -1,0 +1,4 @@
+Implemented 5-day weather API code from Adeel into the weekly weather tab on the main GUI alongside the date that weather would be occurring.
+Also implemented icons for the weekly weather that lined up accordingly. Added a back button to navigate from planner tab back to MainActivity tab because 
+base android back button was inconsistent. 
+

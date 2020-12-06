@@ -1,0 +1,3 @@
+Could not change colour of screen based on descriptions due to descriptions being inconsistent with syntax and having too large a variety of possible descrptions. 
+Adeel finished code for acquiring the link for the icon from the API for the current weather so I was able to implement the icon into the main gui. 
+

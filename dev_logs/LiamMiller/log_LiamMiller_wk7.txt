@@ -1,0 +1,4 @@
+Talked to Adeel about getting icons from api.
+Attempted to update trips presentation but encoutered crashing bugs to be fixed next week.
+
+
