@@ -21,7 +21,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -92,7 +91,6 @@ public class MainActivity extends AppCompatActivity {
 
         image = (ImageView) findViewById(R.id.icon);
 
-
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
 
 
@@ -102,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         weatherMain = findViewById(R.id.weatherMain);
-        weatherMain.setTextSize(20);
+        weatherMain.setTextSize(15);
         weatherDescription = findViewById(R.id.Description);
         weatherDescription.setTextSize(15);
         if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
@@ -317,8 +315,6 @@ public class MainActivity extends AppCompatActivity {
                         image.setImageResource(R.drawable.h50n);
                     }
 
-
-
                 }
 
             }
@@ -342,19 +338,78 @@ public class MainActivity extends AppCompatActivity {
         API.enqueue(new Callback<ListClass>() {
             @Override
             public void onResponse(Call<ListClass> call, Response<ListClass> response) {
-                ScrollView weatherLayout = (ScrollView) findViewById(R.id.weekly_scroll);
-                String fiveDayString = "  ";
-                for (int i = 0; i < 5; i++){
-                    Double w = response.body().getForecast().get(i*8).getMain().getTemp();
-                    int celc = (int) (w - 273.15);
-                    Date newDate = new Date(System.currentTimeMillis() + 86400000*i);
-                    SimpleDateFormat dateFormatter= new SimpleDateFormat("MMMM-dd");
-                    fiveDayString = fiveDayString + Integer.toString(celc) + " ℃ on " + dateFormatter.format(newDate) + "\n" + "  ";
-                }
-                TextView fiveDayText = (TextView) findViewById(R.id.week);
-                fiveDayText.setTextSize(18);
-                fiveDayText.setText(fiveDayString);
+                LinearLayout weatherLayout = (LinearLayout) findViewById(R.id.weekly_scroll);
+                String fiveDayString = "\n" + "\n" + "  ";
+                if (response.body() != null) {
+                    for (int i = 0; i < 5; i++) {
+                        Double w = response.body().getForecast().get(i * 8).getMain().getTemp();
+                        int celc = (int) (w - 273.15);
+                        Date newDate = new Date(System.currentTimeMillis() + 86400000 * i);
+                        SimpleDateFormat dateFormatter = new SimpleDateFormat("MMM-dd");
+                        String icon = response.body().getForecast().get(8*i).getWeather().get(0).getIcon();
+                        ImageView img = findIcon(i);
+                        if(icon.equals("01d")){
+                            img.setImageResource(R.drawable.h01d);
+                        }
+                        if(icon.equals("01n")){
+                            img.setImageResource(R.drawable.h01n);
+                        }
+                        if(icon.equals("02d")){
+                            img.setImageResource(R.drawable.h02d);
+                        }
+                        if(icon.equals("02n")){
+                            img.setImageResource(R.drawable.h02n);
+                        }
+                        if(icon.equals("03d")){
+                            img.setImageResource(R.drawable.h03d);
+                        }
+                        if(icon.equals("03n")){
+                            img.setImageResource(R.drawable.h03n);
+                        }
+                        if(icon.equals("04d")){
+                            img.setImageResource(R.drawable.h04d);
+                        }
+                        if(icon.equals("04n")){
+                            img.setImageResource(R.drawable.h04n);
+                        }
+                        if(icon.equals("09d")){
+                            img.setImageResource(R.drawable.h09d);
+                        }
+                        if(icon.equals("09n")){
+                            img.setImageResource(R.drawable.h09n);
+                        }
+                        if(icon.equals("10d")){
+                            img.setImageResource(R.drawable.h10d);
+                        }
+                        if(icon.equals("10n")){
+                            img.setImageResource(R.drawable.h10n);
+                        }
+                        if(icon.equals("11d")){
+                            img.setImageResource(R.drawable.h11d);
+                        }
+                        if(icon.equals("11n")){
+                            img.setImageResource(R.drawable.h11n);
+                        }
+                        if(icon.equals("13d")){
+                            img.setImageResource(R.drawable.h13d);
+                        }
+                        if(icon.equals("13n")){
+                            img.setImageResource(R.drawable.h13d);
+                        }
+                        if(icon.equals("50d")){
+                            img.setImageResource(R.drawable.h50d);
+                        }
+                        if(icon.equals("50n")){
+                            img.setImageResource(R.drawable.h50n);
+                        }
 
+                        fiveDayString = fiveDayString + Integer.toString(celc) + " ℃ on " + dateFormatter.format(newDate) + "\n" + "\n" + "\n" + "  ";
+                    }
+                    TextView fiveDayText = (TextView) findViewById(R.id.week);
+                    fiveDayText.setTextSize(16);
+                    fiveDayText.setText(fiveDayString);
+
+                }
             }
             @Override
             public void onFailure(Call<ListClass> call, Throwable t) {
@@ -362,7 +417,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
     public String getCityName(double lat, double lon){
@@ -392,9 +446,10 @@ public class MainActivity extends AppCompatActivity {
 
         createNotificationChannel();
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-        //builder.setSmallIcon(R.drawable.ic_sms_notification);
-        builder.setContentTitle("Weather Update");
-        builder.setContentText("TEST");
+        builder.setSmallIcon(R.drawable.h01n);
+        TextView tripText = (TextView) findViewById(R.id.trips_text);
+        builder.setContentTitle("New Trip");
+        builder.setContentText("You have a new trip planned :) : " + tripText.getText().toString());
         builder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
         builder.setAutoCancel(true);
 
@@ -419,16 +474,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void getTrips(String plannerDate) {
-        LinearLayout tripLayout = (LinearLayout) findViewById(R.id.trips);
-        TextView tripText = new TextView(this);
-        tripText.setText("    " + Planner.getPlannerData(plannerDate) + "  " + plannerDate);
-        tripLayout.addView(tripText);
+    void getTrips(String plannerDate) {
+        if(!Planner.getPlannerData(plannerDate).equals("")) {
+            LinearLayout tripLayout = (LinearLayout) findViewById(R.id.trips);
+            TextView tripText = (TextView) findViewById(R.id.trips_text);
+            String text = "    " + Planner.getPlannerData(plannerDate);
+            tripText.setText(text);
+            displayNotification(tripText);
+        }
     }
 
 
-    public void setBackgroundColour(int colour) {
-        View background = this.getWindow().getDecorView();
-        background.setBackgroundColor(colour);
+    public ImageView findIcon(int iconNumber) {
+        ImageView img = null;
+        if (iconNumber == 0) {
+            img = (ImageView) findViewById(R.id.icon0);}
+        if (iconNumber == 1) {
+            img = (ImageView) findViewById(R.id.icon1);}
+        if (iconNumber == 2) {
+            img = (ImageView) findViewById(R.id.icon2);}
+        if (iconNumber == 3) {
+            img = (ImageView) findViewById(R.id.icon3);}
+        if (iconNumber == 4) {
+            img = (ImageView) findViewById(R.id.icon4);}
+        return img;
+
     }
 }

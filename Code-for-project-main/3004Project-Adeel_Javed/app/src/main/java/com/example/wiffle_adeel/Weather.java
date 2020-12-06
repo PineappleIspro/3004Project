@@ -17,7 +17,7 @@ public class Weather {
     @SerializedName("icon")
     @Expose
     private String icon;
-//
+    //
 //    public Integer getId() {
 //        return id;
 //    }
@@ -33,11 +33,11 @@ public class Weather {
     public void setMain(String main) {
         this.main = main;
     }
-//
+    //
     public String getDescription() {
         return description;
     }
-//
+    //
 //    public void setDescription(String description) {
 //        this.description = description;
 //    }

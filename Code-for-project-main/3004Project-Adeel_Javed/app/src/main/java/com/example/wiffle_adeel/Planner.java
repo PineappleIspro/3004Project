@@ -1,5 +1,6 @@
 package com.example.wiffle_adeel;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,7 +21,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class Planner extends AppCompatActivity {
 
     // private LocalDate currentDate = LocalDate.now();
-    private static String Date;
+    private static String date;
 
     //Setting up the persistent SharedPreferences objects to store planner data
     protected static SharedPreferences sharedPref;
@@ -28,7 +30,7 @@ public class Planner extends AppCompatActivity {
     //Requests the Planner Data matching the String date, returns an empty string "" if no data
     //Use this format for the date string: "DD-MM-YYYY"
     public static String getPlannerData(String date) {
-        return sharedPref.getString(Date, "");
+        return sharedPref.getString(date, "");
     }
 
     // Calendar object
@@ -37,6 +39,9 @@ public class Planner extends AppCompatActivity {
     private TextView date_view;
     // Button for inputting schedule data
     private Button calendar_button;
+
+    // Clock for selecting the time for the planner event
+    private TimePicker clock;
     // Textbox for modifying planner data, possibly temporary until better implementation
     private EditText textbx;
 
@@ -58,8 +63,22 @@ public class Planner extends AppCompatActivity {
                 findViewById(R.id.date_view);
         calendar_button = (Button)
                 findViewById(R.id.calender_button);
+        Button back_Button = (Button)
+                findViewById(R.id.back_button);
+        clock = (TimePicker)
+                findViewById(R.id.timeSelector);
+        clock.setIs24HourView(true);
+
         textbx = (EditText)
                 findViewById(R.id.calender_data);
+
+        back_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBack();
+            }
+        });
+
 
         // Set up Calender listener
         calender
@@ -73,27 +92,58 @@ public class Planner extends AppCompatActivity {
                                     @NonNull CalendarView view,
                                     int year,
                                     int month,
-                                    int dayOfMonth)
-                            {
+                                    int dayOfMonth) {
                                 // Assigns the selected date to the Date string
                                 // month index starts at 0 hence the + 1
-                                Date
-                                        = dayOfMonth + "-"
-                                        + (month + 1) + "-" + year;
+                                // Adds preceding 0 if applicable
+                                String s_month;
+                                if (month < 10){
+                                    s_month = ("0" + String.valueOf((month+1)));
+                                } else {
+                                    s_month = (String.valueOf((month+1)));
+                                }
+
+                                String s_dayOfMonth;
+                                if (dayOfMonth < 10){
+                                    s_dayOfMonth = ("0" + String.valueOf((dayOfMonth)));
+                                } else {
+                                    s_dayOfMonth = String.valueOf((dayOfMonth));
+                                }
+
+                                date
+                                        = s_dayOfMonth + "-"
+                                        + s_month + "-" + year;
                                 // set this date in TextView for Display
-                                date_view.setText(Date);
-                                // get planner data for Date and display it in EditText
-                                textbx.setText(getPlannerData(Date));
+                                date_view.setText(date);
+
+                                String date_data = getPlannerData(date);
+                                if (date_data != "") {
+                                    // get planner data for Date and display it in EditText
+                                    //textbx.setText(date_data);
+                                    textbx.setText(date_data.substring(date_data.indexOf("_") + 1));
+                                    // also set the clock to the time the data specifies
+                                    clock.setHour(Integer.parseInt(
+                                            date_data.substring(0, date_data.indexOf(":"))));
+                                    clock.setMinute(Integer.parseInt(
+                                            date_data.substring(date_data.indexOf(":") + 1, date_data.indexOf("_"))));
+                                } else {
+                                    textbx.setText("");
+                                }
                             }
                         });
+
+
 
         // Set Up Calendar_Button listener
         calendar_button
                 .setOnClickListener(new View.OnClickListener(){
                     public void onClick(View v){
-                        //TODO
-                        //Currently Saves the data in textbx
-                        editor.putString(Date, textbx.getText().toString());
+                        //Saves the set time and string in the database
+                        editor.putString(date, clock.getHour()
+                                + ":"
+                                + clock.getMinute()
+                                + "_"
+                                + textbx.getText().toString());
                         editor.apply();
                     }
                 });
@@ -118,5 +168,10 @@ public class Planner extends AppCompatActivity {
                 });
 
 
+    }
+
+    public void goBack(){
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 }

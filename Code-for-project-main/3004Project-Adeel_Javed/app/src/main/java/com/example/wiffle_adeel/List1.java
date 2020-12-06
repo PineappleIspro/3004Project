@@ -12,9 +12,9 @@ public class List1 {
     @SerializedName("main")
     @Expose
     private infoAPI main;
-//    @SerializedName("weather")
-//    @Expose
-//    private java.util.List<Weather> weather = null;
+    @SerializedName("weather")
+    @Expose
+    private java.util.List<Weather> weather = null;
 //    @SerializedName("clouds")
 //    @Expose
 //    private Clouds clouds;
@@ -51,9 +51,9 @@ public class List1 {
         this.main = main;
     }
 
-//    public java.util.List<Weather> getWeather() {
-//        return weather;
-//    }
+    public java.util.List<Weather> getWeather() {
+        return weather;
+    }
 //
 //    public void setWeather(java.util.List<Weather> weather) {
 //        this.weather = weather;
