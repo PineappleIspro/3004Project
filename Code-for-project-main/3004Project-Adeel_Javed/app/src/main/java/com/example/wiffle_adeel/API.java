@@ -8,4 +8,7 @@ public interface API {
      @GET("weather")
      Call<connectAPI> getWeather(@Query("q") String cityname, @Query("appid") String apikey);
 
+     @GET("forecast")
+     Call<ListClass> FiveDayForecast(@Query("q") String cityname, @Query("appid") String apikey);
+
 }
