@@ -1,1 +1,1 @@
-worked with adeel to try to make more dates from the API and correlate with notifications
+worked with jeff to try to make more dates from the API and correlate with notifications
