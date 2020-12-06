@@ -19,6 +19,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private final String CHANNEL_ID = "personal_notifications";
     Button btlocation;
     TextView tvlatitude,tvlongitude, tvcity, tv_updatedCity;
+    ImageView image;
 
     FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -87,6 +89,9 @@ public class MainActivity extends AppCompatActivity {
         tvcity=findViewById(R.id.tv_city);
         Button plannerButton = (Button) findViewById(R.id.plannerButton);
         tv_updatedCity= (TextView)findViewById(R.id.tv_updatedCity);
+
+        image = (ImageView) findViewById(R.id.icon);
+
 
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
 
@@ -255,7 +260,64 @@ public class MainActivity extends AppCompatActivity {
                     weatherMain.setText(weatherString);
 
                     String w = response.body().getWeather().get(0).getMain();
+                    String icon = response.body().getWeather().get(0).getIcon();
                     weatherDescription.setText(w);
+                    if(icon.equals("01d")){
+                        image.setImageResource(R.drawable.h01d);
+                    }
+                    if(icon.equals("01n")){
+                        image.setImageResource(R.drawable.h01n);
+                    }
+                    if(icon.equals("02d")){
+                        image.setImageResource(R.drawable.h02d);
+                    }
+                    if(icon.equals("02n")){
+                        image.setImageResource(R.drawable.h02n);
+                    }
+                    if(icon.equals("03d")){
+                        image.setImageResource(R.drawable.h03d);
+                    }
+                    if(icon.equals("03n")){
+                        image.setImageResource(R.drawable.h03n);
+                    }
+                    if(icon.equals("04d")){
+                        image.setImageResource(R.drawable.h04d);
+                    }
+                    if(icon.equals("04n")){
+                        image.setImageResource(R.drawable.h04n);
+                    }
+                    if(icon.equals("09d")){
+                        image.setImageResource(R.drawable.h09d);
+                    }
+                    if(icon.equals("09n")){
+                        image.setImageResource(R.drawable.h09n);
+                    }
+                    if(icon.equals("10d")){
+                        image.setImageResource(R.drawable.h10d);
+                    }
+                    if(icon.equals("10n")){
+                        image.setImageResource(R.drawable.h10n);
+                    }
+                    if(icon.equals("11d")){
+                        image.setImageResource(R.drawable.h11d);
+                    }
+                    if(icon.equals("11n")){
+                        image.setImageResource(R.drawable.h11n);
+                    }
+                    if(icon.equals("13d")){
+                        image.setImageResource(R.drawable.h13d);
+                    }
+                    if(icon.equals("13n")){
+                        image.setImageResource(R.drawable.h13d);
+                    }
+                    if(icon.equals("50d")){
+                        image.setImageResource(R.drawable.h50d);
+                    }
+                    if(icon.equals("50n")){
+                        image.setImageResource(R.drawable.h50n);
+                    }
+
+
 
                 }
 

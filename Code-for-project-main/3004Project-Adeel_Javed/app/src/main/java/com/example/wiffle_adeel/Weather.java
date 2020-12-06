@@ -11,12 +11,12 @@ public class Weather {
     @SerializedName("main")
     @Expose
     private String main;
-    //    @SerializedName("description")
-//    @Expose
-//    private String description;
-//    @SerializedName("icon")
-//    @Expose
-//    private String icon;
+    @SerializedName("description")
+    @Expose
+    private String description;
+    @SerializedName("icon")
+    @Expose
+    private String icon;
 //
 //    public Integer getId() {
 //        return id;
@@ -34,17 +34,17 @@ public class Weather {
         this.main = main;
     }
 //
-//    public String getDescription() {
-//        return description;
-//    }
+    public String getDescription() {
+        return description;
+    }
 //
 //    public void setDescription(String description) {
 //        this.description = description;
 //    }
 //
-//    public String getIcon() {
-//        return icon;
-//    }
+    public String getIcon() {
+        return icon;
+    }
 //
 //    public void setIcon(String icon) {
 //        this.icon = icon;
