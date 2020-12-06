@@ -12,3 +12,4 @@ public interface API {
      Call<ListClass> FiveDayForecast(@Query("q") String cityname, @Query("appid") String apikey);
 
 }
+

@@ -2,6 +2,7 @@ package com.example.wiffle_adeel;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -18,6 +19,7 @@ import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,26 +52,29 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
     EditText place;
     TextView weatherMain;
-    private Button plannerButton;
     TextView weatherDescription;
+    String City;
 
 
     String apiKey = "d347328678a5eb693250b4aa687d02a8";
+    String apiKey2 = "92d6ab8c95f2ea76b6eddc0ba488ae81";
     private final String CHANNEL_ID = "personal_notifications";
-    private final int Notification_ID = 001;
     Button btlocation;
-    TextView tvlatitude,tvlongitude, tvcity;
+    TextView tvlatitude,tvlongitude, tvcity, tv_updatedCity;
 
     FusedLocationProviderClient fusedLocationProviderClient;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SimpleDateFormat formatter= new SimpleDateFormat("MMMM-dd-yyyy 'at' HH:mm z");
         SimpleDateFormat plannerFormatter= new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat timeFormatter= new SimpleDateFormat("HH:mm");
         Date date = new Date(System.currentTimeMillis());
         String dateString = formatter.format(date);
-        String plannerDate = plannerFormatter.format(date);
+        String timeString = timeFormatter.format(date);
+        final String plannerDate = plannerFormatter.format(date);
         setContentView(R.layout.activity_main);
 
         //assign variable
@@ -77,23 +82,34 @@ public class MainActivity extends AppCompatActivity {
         tvlatitude=findViewById(R.id.tv_latitude);
         tvlongitude=findViewById(R.id.tv_longitude);
         tvcity=findViewById(R.id.tv_city);
-        plannerButton = (Button) findViewById(R.id.plannerButton);
+        Button plannerButton = (Button) findViewById(R.id.plannerButton);
+        tv_updatedCity= (TextView)findViewById(R.id.tv_updatedCity);
 
         fusedLocationProviderClient= LocationServices.getFusedLocationProviderClient(this);
+
 
         TextView dateTime = (TextView) findViewById(R.id.dateTime);
         dateTime.setText(dateString);
         dateTime.setTextSize(15);
 
+
         weatherMain = findViewById(R.id.weatherMain);
         weatherMain.setTextSize(15);
-
-
-
         weatherDescription = findViewById(R.id.Description);
         weatherDescription.setTextSize(15);
-
-
+        if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ){
+            getLocation();
+        }
+        else{
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
+            if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            ){
+                getLocation();
+            }
+        }
         getWeather();
 
         final TextView tripTitle = (TextView) findViewById(R.id.trips_title);
@@ -101,29 +117,14 @@ public class MainActivity extends AppCompatActivity {
         tripTitle.setText(tripsWord);
         tripTitle.setTextSize(20);
 
-        btlocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //check permissions
-                if(ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                ){
-                    getLocation();
-                }
-                else{
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 100);
-
-                }
-            }
-        });
-
         plannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openPlanner();
-
+                getTrips(plannerDate);
             }
         });
+
 
     }
 
@@ -131,6 +132,44 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Planner.class);
         startActivity(intent);
     }
+
+    public void btn_showDialog(View view){
+        final AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+        View mView =getLayoutInflater().inflate(R.layout.activity_popup,null);
+
+
+        //here we can change the city variable to equal the inputed edit_location button
+        final EditText tv_updatedCity =(EditText)mView.findViewById(R.id.edit_Location);
+        Button btn_cancel = (Button)mView.findViewById(R.id.btn_cancel);
+        Button btn_ok = (Button)mView.findViewById(R.id.btn_ok);
+
+        alert.setView(mView);
+
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+
+        btn_cancel.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view){
+                alertDialog.dismiss();
+            }
+        });
+        btn_ok.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View view){
+                //for this i just created a city variable that lets us store a city variable
+                City=(tv_updatedCity.getText().toString());
+                tvcity.setText(City);
+                getWeather();
+                //System.out.println(City);
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -202,21 +241,61 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<connectAPI> call, Response<connectAPI> response) {
 
-                connectAPI data = response.body();
-                infoAPI main = data.getMain();
-                Double Kalv_Temp = main.getTemp();
-                Integer Celc_Temp = (int) (Kalv_Temp - 273.15); //calv to celc
-                String weatherString = String.valueOf(Celc_Temp) + " ℃ in " + tvcity.getText().toString() ;
-                weatherMain.setText(weatherString);
+                Double Kalv_Temp = null;
+                if (response.body() != null) {
+                    Kalv_Temp = response.body().getMain().getTemp();
+                    Integer Celc_Temp = (int) (Kalv_Temp - 273.15); //calv to celc
+                    String weatherString = String.valueOf(Celc_Temp) + " ℃ in " + tvcity.getText().toString() ;
+                    weatherMain.setText(weatherString);
+
+                    String w = response.body().getWeather().get(0).getMain();
+                    weatherDescription.setText(w);
+                    switch (w) {
+                        case "Clouds":
+                            setBackgroundColour(16777215);
+                            break;
+                        case "Sunny":
+                            setBackgroundColour(16768776);
+                            break;
+                        case "Rain":
+                            setBackgroundColour(22783);
+                            break;
+                    }
+                }
+
             }
 
 
             @Override
             public void onFailure(Call<connectAPI> call, Throwable t) {
+                Toast.makeText(MainActivity.this,t.getMessage(),Toast.LENGTH_LONG).show();
+
 
             }
         });
 
+    }
+
+    public void FiveDayForecast(){
+        Retrofit retrofit1 = new Retrofit.Builder().baseUrl("https://api.openweathermap.org/data/2.5/")
+                .addConverterFactory(GsonConverterFactory.create()).build();
+
+        API api = retrofit1.create(API.class);
+        Call<ListClass> API = api.FiveDayForecast(place.getText().toString().trim(),apiKey);
+        API.enqueue(new Callback<ListClass>() {
+            @Override
+            public void onResponse(Call<ListClass> call, Response<ListClass> response) {
+
+                Double w = response.body().getForecast().get(8).getMain().getTemp();
+                int celc = (int) (w - 273.15);
+
+                //View action here
+            }
+            @Override
+            public void onFailure(Call<ListClass> call, Throwable t) {
+
+            }
+        });
     }
 
 
@@ -243,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return curCity;
 
-    }
+}
     public void displayNotification(View view){
 
         createNotificationChannel();
@@ -255,7 +334,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setAutoCancel(true);
 
         NotificationManagerCompat notifyManagerCompact= NotificationManagerCompat.from(this);
-        notifyManagerCompact.notify(Notification_ID,builder.build());
+        int notification_ID = 001;
+        notifyManagerCompact.notify(notification_ID,builder.build());
     }
 
     private void createNotificationChannel() {
@@ -275,7 +355,15 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void getTrips(String plannerDate) {
-        TextView dateTime = (TextView) findViewById(R.id.dateTime);
-        weatherMain.setText(Planner.getPlannerData(plannerDate));
+        LinearLayout tripLayout = (LinearLayout) findViewById(R.id.trips);
+        TextView tripText = new TextView(this);
+        tripText.setText("    " + Planner.getPlannerData(plannerDate) + "  " + plannerDate);
+        tripLayout.addView(tripText);
+    }
+
+
+    public void setBackgroundColour(int colour) {
+        View background = this.getWindow().getDecorView();
+        background.setBackgroundColor(colour);
     }
 }

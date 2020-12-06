@@ -22,7 +22,7 @@ public class Planner extends AppCompatActivity {
     private static String Date;
 
     //Setting up the persistent SharedPreferences objects to store planner data
-    private static SharedPreferences sharedPref;
+    protected static SharedPreferences sharedPref;
     private SharedPreferences.Editor editor;
 
     //Requests the Planner Data matching the String date, returns an empty string "" if no data
